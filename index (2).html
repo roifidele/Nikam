@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikam Création Events - Agence Événementielle & Communication</title>
+    <meta name="description" content="Nikam Création Events est une agence événementielle et de communication qui accompagne particuliers et entreprises dans la réalisation de projets uniques et mémorables.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Open+Sans:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-great-vibes { font-family: 'Great Vibes', cursive; }
+        .font-open-sans { font-family: 'Open Sans', sans-serif; }
+        .text-primary { color: #3B0318; }
+        .bg-primary { background-color: #3B0318; }
+        .text-accent { color: #F8B0E6; }
+        .bg-accent { background-color: #F8B0E6; }
+        .text-secondary { color: #E0AA3E; }
+        .bg-secondary { background-color: #E0AA3E; }
+        .hero-bg {
+            background: linear-gradient(rgba(59, 3, 24, 0.7), rgba(59, 3, 24, 0.5)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%233B0318"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23E0AA3E" stroke-width="1"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        .section-padding {
+            padding: 5rem 0;
+        }
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #3B0318;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .loading-logo {
+            font-size: 3rem;
+            color: #E0AA3E;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .event-card {
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .event-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(59, 3, 24, 0.9));
+            padding: 2rem;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .event-card:hover .event-overlay {
+            transform: translateY(0);
+        }
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="font-open-sans text-gray-800">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="text-center">
+            <div class="loading-logo font-playfair mb-4">NIKAM.CREATION</div>
+            <div class="text-white text-xl">Chargement...</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header x-data="{ open: false }" class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="font-playfair text-2xl font-bold text-primary">NIKAM.CREATION</h1>
+                    <span class="ml-2 text-secondary font-semibold">EVENTS</span>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button @click="open = !open" class="text-primary focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Desktop menu -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-primary hover:text-secondary transition-colors">Accueil</a>
+                    <a href="#about" class="text-primary hover:text-secondary transition-colors">À propos</a>
+                    <a href="#events" class="text-primary hover:text-secondary transition-colors">Nos Événements</a>
+                    <a href="#services" class="text-primary hover:text-secondary transition-colors">Services</a>
+                    <a href="#contact" class="text-primary hover:text-secondary transition-colors">Contact</a>
+                </nav>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div x-show="open" class="md:hidden py-4 border-t border-gray-200">
+                <nav class="flex flex-col space-y-4">
+                    <a href="#home" class="text-primary hover:text-secondary transition-colors" @click="open = false">Accueil</a>
+                    <a href="#about" class="text-primary hover:text-secondary transition-colors" @click="open = false">À propos</a>
+                    <a href="#events" class="text-primary hover:text-secondary transition-colors" @click="open = false">Nos Événements</a>
+                    <a href="#services" class="text-primary hover:text-secondary transition-colors" @click="open = false">Services</a>
+                    <a href="#contact" class="text-primary hover:text-secondary transition-colors" @click="open = false">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center text-white pt-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="font-great-vibes text-5xl md:text-7xl mb-4">C'est de faire vibrer vos instants</h2>
+            <h1 class="font-playfair text-4xl md:text-6xl font-bold mb-8">NIKAM.CREATION EVENTS</h1>
+            <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-10">Agence événementielle et de communication qui transforme vos idées en expériences mémorables</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#events" class="bg-secondary hover:bg-yellow-500 text-white font-semibold py-3 px-8 rounded-full transition-colors">Découvrir nos événements</a>
+                <a href="#services" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary text-white font-semibold py-3 px-8 rounded-full transition-colors">Nos services</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-padding bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-secondary font-semibold">À propos de nous</span>
+                <h2 class="font-playfair text-4xl md:text-5xl text-primary mt-2">Notre histoire</h2>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <p class="text-lg mb-6">
+                    <span class="font-bold text-primary">NIKAM Création Events</span> est une agence événementielle et de communication qui accompagne particuliers et entreprises dans la réalisation de projets uniques et mémorables.
+                </p>
+                <p class="text-lg mb-6">
+                    Nous accompagnons nos clients dans la conception, l'organisation et la mise en valeur de leurs projets, qu'il s'agisse d'événements privés, corporatifs ou d'une stratégie de communication globale. Notre force réside dans l'alliance de la créativité et de la rigueur professionnelle, en mettant toujours le client au centre de nos priorités.
+                </p>
+                
+                <div class="bg-white p-8 rounded-lg shadow-md mt-10">
+                    <h3 class="font-playfair text-2xl text-primary mb-4">Notre mission</h3>
+                    <p class="mb-6">
+                        Transformer vos idées en expériences, et donner vie à vos événements tout en bâtissant une image forte grâce à une communication efficace. Nous voulons que chaque événement, chaque campagne, soit le reflet de votre personnalité, de vos valeurs et de vos rêves.
+                    </p>
+                    <p class="mb-6">
+                        Chez <span class="font-bold text-primary">NIKAM</span>, nous croyons qu'un projet bien pensé et bien exécuté a le pouvoir de marquer les esprits et de créer du lien.
+                    </p>
+                    <h3 class="font-playfair text-2xl text-primary mb-4">Notre vision</h3>
+                    <p>
+                        Nous aspirons à devenir une référence en matière d'événementiel et de communication, non seulement par notre créativité, mais surtout par notre capacité à raconter des histoires à travers chaque projet. Notre vision est de bâtir un monde où les événements ne sont pas de simples rendez-vous, mais des expériences immersives qui inspirent, rassemblent et laissent une empreinte durable.
+                    </p>
+                </div>
+                
+                <div class="mt-10 text-center">
+                    <p class="text-xl font-semibold text-primary">Créativité, professionnalisme, accessibilité, authenticité.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="section-padding">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-secondary font-semibold">Nos événements</span>
+                <h2 class="font-playfair text-4xl md:text-5xl text-primary mt-2">Événements en cours</h2>
+                <p class="text-lg mt-4 max-w-2xl mx-auto">Découvrez nos événements actuels et réservez votre place dès maintenant pour vivre des expériences uniques et mémorables.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Chicken Party Event -->
+                <div class="event-card" style="background-image: url('chicken.JPG')">
+                    <div class="event-overlay">
+                        <h3 class="font-playfair text-2xl mb-2">Chicken Party</h3>
+                        <p class="mb-4">Une soirée décontractée autour de délicieux plats de poulet, de bonne musique et d'ambiance conviviale.</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="bg-secondary text-white px-3 py-1 rounded-full text-sm">25 Nov 2023</span>
+                            </div>
+                            <a href="reservation.html" class="bg-primary hover:bg-purple-900 text-white px-4 py-2 rounded-full transition-colors">Réserver</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Campus Fest Event -->
+                <div class="event-card" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"400\" viewBox=\"0 0 400 400\"><rect width=\"400\" height=\"400\" fill=\"%23F8B0E6\"/><text x=\"50%\" y=\"45%\" font-family=\"Arial\" font-size=\"24\" text-anchor=\"middle\" fill=\"%233B0318\">Campus Fest</text><text x=\"50%\" y=\"55%\" font-family=\"Arial\" font-size=\"16\" text-anchor=\"middle\" fill=\"%233B0318\">Image à remplacer</text></svg>')">
+                    <div class="event-overlay">
+                        <h3 class="font-playfair text-2xl mb-2">Campus Fest</h3>
+                        <p class="mb-4">Le festival étudiant de l'année ! Concerts, animations, food trucks et bien plus encore.</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="bg-secondary text-white px-3 py-1 rounded-full text-sm">15 Déc 2023</span>
+                            </div>
+                            <a href="reservation.html" class="bg-primary hover:bg-purple-900 text-white px-4 py-2 rounded-full transition-colors">Réserver</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chicken Party Booking Page -->
+    <section id="chicken-party" class="section-padding bg-gray-50 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <a href="#events" class="inline-flex items-center text-primary hover:text-secondary mb-6 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour aux événements
+                </a>
+                
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-8">
+                        <h2 class="font-playfair text-3xl text-primary mb-2">Chicken Party</h2>
+                        <div class="flex items-center mb-6">
+                            <span class="bg-secondary text-white px-3 py-1 rounded-full text-sm mr-4">25 Nov 2023</span>
+                            <span class="text-gray-600">20h00 - 02h00</span>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <h3 class="font-semibold text-lg text-primary mb-2">Description</h3>
+                            <p>Rejoignez-nous pour une soirée décontractée autour de délicieux plats de poulet préparés par nos chefs. Au programme : musique entraînante, ambiance conviviale, jeux et bien sûr, des spécialités de poulet à déguster. Une soirée parfaite pour se détendre entre amis et faire de nouvelles rencontres.</p>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <h3 class="font-semibold text-lg text-primary mb-2">Packs disponibles</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="border border-gray-200 rounded-lg p-4 text-center">
+                                    <h4 class="font-semibold text-primary">Solo</h4>
+                                    <p class="text-2xl font-bold text-secondary my-2">15 000 FCFA</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>Entrée à l'événement</li>
+                                        <li>2 plats de poulet au choix</li>
+                                        <li>1 boisson offerte</li>
+                                    </ul>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-4 text-center border-2 border-secondary">
+                                    <h4 class="font-semibold text-primary">Duo</h4>
+                                    <p class="text-2xl font-bold text-secondary my-2">25 000 FCFA</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>Entrée pour 2 personnes</li>
+                                        <li>4 plats de poulet au choix</li>
+                                        <li>2 boissons offertes</li>
+                                        <li>Photo souvenir</li>
+                                    </ul>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-4 text-center">
+                                    <h4 class="font-semibold text-primary">Groupe (5 pers.)</h4>
+                                    <p class="text-2xl font-bold text-secondary my-2">60 000 FCFA</h4>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>Entrée pour 5 personnes</li>
+                                        <li>10 plats de poulet au choix</li>
+                                        <li>5 boissons offertes</li>
+                                        <li>Table réservée</li>
+                                        <li>Photos souvenirs</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-lg text-primary mb-4">Formulaire de réservation</h3>
+                            <form id="chickenPartyForm" class="space-y-6">
+                                <!-- Step 1: Personal Information -->
+                                <div class="form-step active" id="step1">
+                                    <h4 class="font-semibold text-primary mb-4">Informations personnelles</h4>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="cp-nom" class="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                                            <input type="text" id="cp-nom" name="nom" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label for="cp-prenom" class="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
+                                            <input type="text" id="cp-prenom" name="prenom" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label for="cp-promotion" class="block text-sm font-medium text-gray-700 mb-1">Promotion *</label>
+                                            <input type="text" id="cp-promotion" name="promotion" name="promotion" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label for="cp-faculte" class="block text-sm font-medium text-gray-700 mb-1">Faculté *</label>
+                                            <input type="text" id="cp-faculte" name="faculte" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="mt-6">
+                                        <button type="button" class="next-step bg-primary hover:bg-purple-900 text-white font-semibold py-2 px-6 rounded-md transition-colors" data-next="2">Suivant</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 2: Pack Selection -->
+                                <div class="form-step" id="step2">
+                                    <h4 class="font-semibold text-primary mb-4">Choix du pack</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input type="radio" id="cp-pack-solo" name="pack" value="solo" class="mr-3 focus:ring-secondary">
+                                            <label for="cp-pack-solo" class="font-medium">Solo - 15 000 FCFA</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="radio" id="cp-pack-duo" name="pack" value="duo" class="mr-3 focus:ring-secondary">
+                                            <label for="cp-pack-duo" class="font-medium">Duo - 25 000 FCFA</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="radio" id="cp-pack-groupe" name="pack" value="groupe" class="mr-3 focus:ring-secondary">
+                                            <label for="cp-pack-groupe" class="font-medium">Groupe (5 personnes) - 60 000 FCFA</label>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between mt-6">
+                                        <button type="button" class="prev-step bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-md transition-colors" data-prev="1">Précédent</button>
+                                        <button type="button" class="next-step bg-primary hover:bg-purple-900 text-white font-semibold py-2 px-6 rounded-md transition-colors" data-next="3">Suivant</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 3: Group Members (only for group pack) -->
+                                <div class="form-step" id="step3">
+                                    <h4 class="font-semibold text-primary mb-4">Informations des membres du groupe</h4>
+                                    <p class="text-sm text-gray-600 mb-4">Veuillez renseigner les informations des 4 autres membres de votre groupe :</p>
+                                    
+                                    <div id="group-members" class="space-y-4">
+                                        <!-- Group member fields will be added here dynamically -->
+                                    </div>
+                                    
+                                    <div class="flex justify-between mt-6">
+                                        <button type="button" class="prev-step bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-md transition-colors" data-prev="2">Précédent</button>
+                                        <button type="submit" class="bg-secondary hover:bg-yellow-500 text-white font-semibold py-2 px-6 rounded-md transition-colors">Finaliser la réservation</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Campus Fest Booking Page -->
+    <section id="campus-fest" class="section-padding bg-gray-50 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <a href="#events" class="inline-flex items-center text-primary hover:text-secondary mb-6 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour aux événements
+                </a>
+                
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-8">
+                        <h2 class="font-playfair text-3xl text-primary mb-2">Campus Fest</h2>
+                        <div class="flex items-center mb-6">
+                            <span class="bg-secondary text-white px-3 py-1 rounded-full text-sm mr-4">15 Déc 2023</span>
+                            <span class="text-gray-600">14h00 - 23h00</span>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <h3 class="font-semibold text-lg text-primary mb-2">Description</h3>
+                            <p>Le festival étudiant de l'année est de retour ! Une journée entière dédiée à la culture étudiante avec des concerts live, des performances artistiques, des food trucks, des stands d'associations et bien plus encore. Venez célébrer la fin d'année universitaire dans une ambiance festive et conviviale.</p>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <h3 class="font-semibold text-lg text-primary mb-2">Packs disponibles</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="border border-gray-200 rounded-lg p-4 text-center">
+                                    <h4 class="font-semibold text-primary">Solo</h4>
+                                    <p class="text-2xl font-bold text-secondary my-2">10 000 FCFA</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>Entrée à l'événement</li>
+                                        <li>Accès à tous les concerts</li>
+                                        <li>1 boisson offerte</li>
+                                    </ul>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-4 text-center border-2 border-secondary">
+                                    <h4 class="font-semibold text-primary">Duo</h4>
+                                    <p class="text-2xl font-bold text-secondary my-2">18 000 FCFA</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>Entrée pour 2 personnes</li>
+                                        <li>Accès à tous les concerts</li>
+                                        <li>2 boissons offertes</li>
+                                        <li>Goodies exclusifs</li>
+                                    </ul>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-4 text-center">
+                                    <h4 class="font-semibold text-primary">Groupe (5 pers.)</h4>
+                                    <p class="text-2xl font-bold text-secondary my-2">40 000 FCFA</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>Entrée pour 5 personnes</li>
+                                        <li>Accès à tous les concerts</li>
+                                        <li>5 boissons offertes</li>
+                                        <li>Espace détente réservé</li>
+                                        <li>Goodies exclusifs</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-lg text-primary mb-4">Formulaire de réservation</h3>
+                            <form id="campusFestForm" class="space-y-6">
+                                <!-- Step 1: Personal Information -->
+                                <div class="form-step active" id="cf-step1">
+                                    <h4 class="font-semibold text-primary mb-4">Informations personnelles</h4>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="cf-nom" class="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                                            <input type="text" id="cf-nom" name="nom" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label for="cf-prenom" class="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
+                                            <input type="text" id="cf-prenom" name="prenom" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label for="cf-promotion" class="block text-sm font-medium text-gray-700 mb-1">Promotion *</label>
+                                            <input type="text" id="cf-promotion" name="promotion" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label for="cf-faculte" class="block text-sm font-medium text-gray-700 mb-1">Faculté *</label>
+                                            <input type="text" id="cf-faculte" name="faculte" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="mt-6">
+                                        <button type="button" class="next-step bg-primary hover:bg-purple-900 text-white font-semibold py-2 px-6 rounded-md transition-colors" data-next="2">Suivant</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 2: Pack Selection -->
+                                <div class="form-step" id="cf-step2">
+                                    <h4 class="font-semibold text-primary mb-4">Choix du pack</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input type="radio" id="cf-pack-solo" name="pack" value="solo" class="mr-3 focus:ring-secondary">
+                                            <label for="cf-pack-solo" class="font-medium">Solo - 10 000 FCFA</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="radio" id="cf-pack-duo" name="pack" value="duo" class="mr-3 focus:ring-secondary">
+                                            <label for="cf-pack-duo" class="font-medium">Duo - 18 000 FCFA</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="radio" id="cf-pack-groupe" name="pack" value="groupe" class="mr-3 focus:ring-secondary">
+                                            <label for="cf-pack-groupe" class="font-medium">Groupe (5 personnes) - 40 000 FCFA</label>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between mt-6">
+                                        <button type="button" class="prev-step bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-md transition-colors" data-prev="1">Précédent</button>
+                                        <button type="button" class="next-step bg-primary hover:bg-purple-900 text-white font-semibold py-2 px-6 rounded-md transition-colors" data-next="3">Suivant</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 3: Group Members (only for group pack) -->
+                                <div class="form-step" id="cf-step3">
+                                    <h4 class="font-semibold text-primary mb-4">Informations des membres du groupe</h4>
+                                    <p class="text-sm text-gray-600 mb-4">Veuillez renseigner les informations des 4 autres membres de votre groupe :</p>
+                                    
+                                    <div id="cf-group-members" class="space-y-4">
+                                        <!-- Group member fields will be added here dynamically -->
+                                    </div>
+                                    
+                                    <div class="flex justify-between mt-6">
+                                        <button type="button" class="prev-step bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-md transition-colors" data-prev="2">Précédent</button>
+                                        <button type="submit" class="bg-secondary hover:bg-yellow-500 text-white font-semibold py-2 px-6 rounded-md transition-colors">Finaliser la réservation</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section-padding">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-secondary font-semibold">Nos services</span>
+                <h2 class="font-playfair text-4xl md:text-5xl text-primary mt-2">Ce que nous proposons</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <!-- Service Événementiel -->
+                <div class="bg-white p-8 rounded-lg shadow-md hover-lift">
+                    <h3 class="font-playfair text-2xl text-primary mb-6 pb-2 border-b-2 border-secondary">Service Événementiel</h3>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-primary mb-2">Organisation & coordination complète</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Conception du concept de l'événement (thème, couleurs, ambiance)</li>
+                            <li>Élaboration du budget et suivi des dépenses</li>
+                            <li>Recherche et gestion des prestataires</li>
+                            <li>Supervision le jour J</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-primary mb-2">Mariages & événements privés</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Création de thèmes personnalisés</li>
+                            <li>Décorations uniques</li>
+                            <li>Coordination des prestataires beauté</li>
+                            <li>Animation musicale et artistique</li>
+                            <li>Sweet table et buffets thématiques</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-primary mb-2">Événements corporatifs & conférences</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Organisation de séminaires, workshops et conférences</li>
+                            <li>Scénographie et mise en valeur de la marque</li>
+                            <li>Gestion technique (son, lumière, vidéo)</li>
+                            <li>Création de supports</li>
+                            <li>Gestion des relations presse et médias</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-lg text-primary mb-2">Célébrations & lancements</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Anniversaires, baptêmes, fêtes familiales</li>
+                            <li>Lancements de produits / services</li>
+                            <li>Soirées d'entreprise</li>
+                            <li>Expériences immersives adaptées à la cible</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Service de Communication -->
+                <div class="bg-white p-8 rounded-lg shadow-md hover-lift">
+                    <h3 class="font-playfair text-2xl text-primary mb-6 pb-2 border-b-2 border-secondary">Service de Communication</h3>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-primary mb-2">Stratégie de communication</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Analyse de votre image de marque et positionnement</li>
+                            <li>Définition de la ligne éditoriale et du ton de communication</li>
+                            <li>Plan de communication sur mesure</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-primary mb-2">Social Media Management</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Gestion complète de vos pages</li>
+                            <li>Création de contenu</li>
+                            <li>Planification et calendrier éditorial</li>
+                            <li>Animation des communautés</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-primary mb-2">Création visuelle & identité</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Logos, chartes graphiques, affiches et flyers</li>
+                            <li>Catalogues événementiels ou produits</li>
+                            <li>Contenu visuel pour réseaux sociaux</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-lg text-primary mb-2">Relations publiques & médias</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Rédaction de communiqués et dossiers de presse</li>
+                            <li>Mise en avant de vos projets dans les médias</li>
+                            <li>Mise en relation avec influenceurs et leaders d'opinion</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-secondary font-semibold">Contactez-nous</span>
+                <h2 class="font-playfair text-4xl md:text-5xl text-primary mt-2">Travaillons ensemble</h2>
+            </div>
+            
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="font-playfair text-2xl text-primary mb-6">Nos coordonnées</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white p-3 rounded-full mr-4">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-primary">Téléphone</h4>
+                                <p>+243 (0) 847 386 954</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white p-3 rounded-full mr-4">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-primary">Email</h4>
+                                <p>nikam.creationevents@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white p-3 rounded-full mr-4">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-primary">Instagram</h4>
+                                <p>@nikam.creation_events</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h3 class="font-playfair text-xl text-primary mb-4">Notre philosophie</h3>
+                        <p class="mb-4">
+                            Au-delà d'un simple prestataire, nous nous considérons comme des <strong>créateurs d'émotions</strong>. Chaque projet que nous réalisons est porté par une conviction : derrière chaque événement et chaque message, il y a une histoire à raconter.
+                        </p>
+                        <p>
+                            Nous croyons que <strong>l'événementiel</strong> et la <strong>communication</strong> sont plus que des services : ce sont des <strong>ponts humains</strong>, des instants suspendus qui <strong>relient</strong> des personnes, des idées et des rêves.
+                        </p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-playfair text-2xl text-primary mb-6">Envoyez-nous un message</h3>
+                    
+                    <form class="space-y-4" id="contactForm">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
+                            <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                            <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="eventType" class="block text-sm font-medium text-gray-700 mb-1">Type d'événement</label>
+                            <select id="eventType" name="eventType" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                                <option value="">Sélectionnez une option</option>
+                                <option value="mariage">Mariage</option>
+                                <option value="anniversaire">Anniversaire</option>
+                                <option value="bapteme">Baptême</option>
+                                <option value="entreprise">Événement d'entreprise</option>
+                                <option value="lancement">Lancement de produit</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-primary hover:bg-purple-900 text-white font-semibold py-3 px-4 rounded-md transition-colors">
+                            Envoyer le message
+                        </button>
+                    </form>
+                    
+                    <!-- WhatsApp Button -->
+                    <div class="mt-6">
+                        <a href="https://wa.me/243847386954?text=Bonjour%20Nikam%20j'ai%20besoin%20de%20votre%20expertise" target="_blank" class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-md transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893-.001-3.189-1.262-6.187-3.55-8.444z"/>
+                            </svg>
+                            Contactez-nous sur WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h2 class="font-playfair text-2xl">NIKAM.CREATION</h2>
+                    <p class="text-secondary font-semibold">EVENTS</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="font-great-vibes text-2xl mb-2">C'est de faire vibrer vos instants</p>
+                    <p>&copy; 2023 Nikam Création Events. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Loading screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                document.getElementById('loadingScreen').style.visibility = 'hidden';
+            }, 1500);
+        });
+
+        // Form submission handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            
+            // In a real implementation, you would send this data to a server
+            // For this demo, we'll just show an alert
+            alert(`Merci ${name} ! Votre message a été envoyé. Nous vous contacterons bientôt.`);
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Multi-step form functionality
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', function() {
+                const currentStep = this.closest('.form-step');
+                const nextStepId = this.getAttribute('data-next');
+                const nextStep = document.getElementById(`step${nextStepId}`) || document.getElementById(`cf-step${nextStepId}`);
+                
+                // Validate current step
+                if (validateStep(currentStep)) {
+                    currentStep.classList.remove('active');
+                    nextStep.classList.add('active');
+                    
+                    // If moving to step 3 and group pack is selected, generate group member fields
+                    if (nextStepId === '3') {
+                        const packSelected = document.querySelector('input[name="pack"]:checked');
+                        if (packSelected && packSelected.value === 'groupe') {
+                            generateGroupMemberFields(nextStepId.includes('cf') ? 'cf' : 'cp');
+                        }
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', function() {
+                const currentStep = this.closest('.form-step');
+                const prevStepId = this.getAttribute('data-prev');
+                const prevStep = document.getElementById(`step${prevStepId}`) || document.getElementById(`cf-step${prevStepId}`);
+                
+                currentStep.classList.remove('active');
+                prevStep.classList.add('active');
+            });
+        });
+
+        // Event booking forms
+        document.getElementById('chickenPartyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Votre réservation pour Chicken Party a été enregistrée ! Nous vous contacterons pour finaliser les détails.');
+            window.location.href = '#events';
+        });
+
+        document.getElementById('campusFestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Votre réservation pour Campus Fest a été enregistrée ! Nous vous contacterons pour finaliser les détails.');
+            window.location.href = '#events';
+        });
+
+        // Generate group member fields
+        function generateGroupMemberFields(formPrefix) {
+            const container = document.getElementById(`${formPrefix}-group-members`);
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 4; i++) {
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'border border-gray-200 rounded-lg p-4';
+                memberDiv.innerHTML = `
+                    <h5 class="font-semibold text-primary mb-3">Membre ${i}</h5>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="${formPrefix}-member${i}-nom" class="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                            <input type="text" id="${formPrefix}-member${i}-nom" name="member${i}-nom" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="${formPrefix}-member${i}-prenom" class="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
+                            <input type="text" id="${formPrefix}-member${i}-prenom" name="member${i}-prenom" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label for="${formPrefix}-member${i}-promotion" class="block text-sm font-medium text-gray-700 mb-1">Promotion *</label>
+                            <input type="text" id="${formPrefix}-member${i}-promotion" name="member${i}-promotion" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="${formPrefix}-member${i}-faculte" class="block text-sm font-medium text-gray-700 mb-1">Faculté *</label>
+                            <input type="text" id="${formPrefix}-member${i}-faculte" name="member${i}-faculte" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(memberDiv);
+            }
+        }
+
+        // Validate form step
+        function validateStep(step) {
+            const inputs = step.querySelectorAll('input[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('border-red-500');
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+            
+            if (!isValid) {
+                alert('Veuillez remplir tous les champs obligatoires avant de continuer.');
+            }
+            
+            return isValid;
+        }
+
+        // Event page navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                // Show/hide event pages
+                if (targetId === '#chicken-party') {
+                    document.getElementById('chicken-party').classList.remove('hidden');
+                    document.getElementById('campus-fest').classList.add('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (targetId === '#campus-fest') {
+                    document.getElementById('campus-fest').classList.remove('hidden');
+                    document.getElementById('chicken-party').classList.add('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (targetId === '#events') {
+                    document.getElementById('chicken-party').classList.add('hidden');
+                    document.getElementById('campus-fest').classList.add('hidden');
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                } else {
+                    document.getElementById('chicken-party').classList.add('hidden');
+                    document.getElementById('campus-fest').classList.add('hidden');
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
